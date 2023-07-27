@@ -5,12 +5,13 @@ import logo from './img/bg.png';
 import dataJs from './data.js';
 import Detail from './routes/Detail.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
+import axios from 'axios';
 
 function App() {
 
   let [shoes, setShoes] = useState(dataJs);
   let navigate = useNavigate();
-
+  let [moreNum, setMoreNum] = useState(1);
   // console.log(shoes);array
   return (
     <div className="App">
@@ -39,11 +40,39 @@ function App() {
                   {
                     shoes.map((a,i)=>{
                       return (
-                        <Card shoesCopy={shoes[i]} i={i}></Card>
+                        <Card shoesCopy={shoes[i]} i={i} key={i}></Card>
                       )
                     })
                   }
                 </Row>
+                {
+                  moreNum < 3 ?
+                  <button onClick={()=>{
+                    let moreNumChange = moreNum+1;
+                    console.log(moreNumChange)
+                    axios.get('https://codingapple1.github.io/shop/data'+moreNumChange+'.json').then((data)=>{
+                      //console.log(data.data);
+                      /*let shoesCopy = [...shoes];
+                      for (let i = 0; i < data.data.length; i++) {
+                        shoesCopy.push(data.data[i]);
+                      };*/
+                      let shoesCopy = [...shoes, ...data.data];
+                      setMoreNum(moreNumChange);
+                      setShoes(shoesCopy);
+                    }).catch((e)=>{
+                      e.
+                      console.log(e.message);
+                    })
+
+                    axios.post('',{name:'kim'});
+                    /*axios.get('url1')
+                    axios.get('url2')*/
+                    Promise.all([axios.get('url1'), axios.get('url2')]).then(()=>{
+                      //둘다 성공시
+                    })
+                  }}>벝은</button>
+                  :null
+                }
               </Container>
           </>
         
@@ -85,5 +114,6 @@ function Card (props) {
     </Col>
   );
 }
+
 
 export default App;
