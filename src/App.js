@@ -1,17 +1,21 @@
-import {useState} from 'react';
+import {createContext, useState} from 'react';
 import './App.css';
-import {Row, Col, Button, Container, Nav, Navbar} from 'react-bootstrap';
+import {Row, Col, Container, Nav, Navbar} from 'react-bootstrap';
 import logo from './img/bg.png';
 import dataJs from './data.js';
 import Detail from './routes/Detail.js';
-import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom';
+import Cart from './routes/Cart.js';
+import { Routes, Route, useNavigate, Outlet } from 'react-router-dom';
 import axios from 'axios';
+
+export let Context1 = createContext();
 
 function App() {
 
   let [shoes, setShoes] = useState(dataJs);
   let navigate = useNavigate();
   let [moreNum, setMoreNum] = useState(1);
+  let [stock, setStock] = useState([10,11,12])
   // console.log(shoes);array
   return (
     <div className="App">
@@ -60,7 +64,6 @@ function App() {
                       setMoreNum(moreNumChange);
                       setShoes(shoesCopy);
                     }).catch((e)=>{
-                      e.
                       console.log(e.message);
                     })
 
@@ -78,12 +81,15 @@ function App() {
         
         }/>
         <Route path="/detail/:id" element={
-          <Detail shoesCopy={shoes} i={0}></Detail>
+          <Context1.Provider value={{stock, shoes, moreNum}}>
+            <Detail shoesCopy={shoes} i={0}></Detail>
+          </Context1.Provider>
         }/>
         <Route path="/about" element={<About></About>}>
           <Route path="member" element={<div>멤버페이지</div>}></Route>
           <Route path="location" element={<div>로케이션페이지</div>}></Route>
         </Route>
+        <Route path="/cart" element={<Cart></Cart>}></Route>
 
         <Route path="*" element={<div>404 Not Found</div>}></Route>
       </Routes>
@@ -108,7 +114,7 @@ function Card (props) {
   //console.log(shoesCopy.length);
   return (
     <Col sm={4}>
-    <img src={"https://codingapple1.github.io/shop/shoes"+(props.i+1)+".jpg"} width="80%"/>
+    <img src={"https://codingapple1.github.io/shop/shoes"+(props.i+1)+".jpg"} width="80%" ale="1"/>
       <h4>{shoesCopy.title}</h4>
       <p>{shoesCopy.price}</p>
     </Col>
