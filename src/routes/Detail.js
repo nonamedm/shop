@@ -1,11 +1,15 @@
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useState } from "react";
 import styled from 'styled-components';
+import { Nav } from 'react-bootstrap';
+
+import { Context1 } from './../App.js';
+
 
 let YellowBtn = styled.button`
     background : ${props => props.bg};
-    color: ${props => props.bg == 'blue' ? 'white' : 'black'};
+    color: ${props => props.bg === 'blue' ? 'white' : 'black'};
     padding : 10px;
 `
 
@@ -25,21 +29,22 @@ function Detail3 () {
 
 function Detail (props) {
     
+    let {stock} = useContext(Context1);
+    //console.log(a);
+    //console.log(stock);
+
     let [count, setCount] = useState(0);
     
     let {id} = useParams();
-    let number = parseInt(id)+1;
     
     let cont = props.shoesCopy.find(function(data){
         return data.id == id;
     });
     
-    let shoesCopy = props.shoesCopy;
-
     let [alertNum,setAlert] = useState(true);
 
     let [num, setNum] = useState('');
-
+    let [tab, setTab] = useState(2);
     Detail3();
     useEffect(()=>{
         let a = setTimeout(()=>{
@@ -99,8 +104,52 @@ function Detail (props) {
                 <button className="btn btn-danger">주문하기</button> 
                 </div>
             </div>
+
+            <Nav justify variant="tabs" defaultActiveKey="/home">
+                {/* <Nav.Item>
+                    <Nav.Link href="/home">Active</Nav.Link>
+                </Nav.Item> */}
+                <Nav.Item>
+                    <Nav.Link eventKey="link-0" onClick={()=>{setTab(0)}}>tab1</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link eventKey="link-1" onClick={()=>{setTab(1)}}>tab2</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link eventKey="link-2" onClick={()=>{setTab(2)}}>tab3</Nav.Link>
+                </Nav.Item>
+                {/* <Nav.Item>
+                    <Nav.Link eventKey="disabled" disabled>
+                    Disabled
+                    </Nav.Link>
+                </Nav.Item> */} 
+            </Nav>
+            <TabContent tab={tab} shoes={props.shoesCopy}></TabContent>
         </div> 
     );
+}
+
+function TabContent({tab, shoes}) {
+    // let tab = props.tab;
+    let {id} = useParams();
+    let [fade, setFade] = useState()
+    let {stock} = useContext(Context1);
+    useEffect(()=>{
+        let a = setTimeout(()=>{
+            setFade('end')
+        },100)
+        return ()=>{
+            //cleanup function (useEffect 실행전에 실행됨)
+            clearTimeout(a);
+            setFade('')
+        }
+    },[tab])
+    // return <div className={"start" + fade}>
+    return <div className={`start ${fade}`}>
+        {
+            [<div>{shoes[id].title}<br/>{shoes[id].price}</div>,<div>{stock[id]}</div>,<div>내용2</div>][tab]
+        }
+            </div>
 }
 
 export default Detail;
